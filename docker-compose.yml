@@ -1,0 +1,16 @@
+version: 5.7.1-augustus
+services:
+  ncs:
+    build: ./docker-images/
+    image: cisco-nso-dev:5.7.1-augustus
+    ports: 
+      - "8022:22"
+      - "8080:80"
+      - "8830:830"
+      - "8334:4334"
+    volumes:
+      - "./packages/:/opt/ncs/packages/"
+    entrypoint:
+      - /run-nso.sh
+    environment:
+      NCS_RUN_DIR: /opt/ncs/

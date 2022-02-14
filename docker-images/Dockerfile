@@ -11,8 +11,12 @@ RUN apt-get update \
 ARG NSO_INSTALL_FILE
 COPY $NSO_INSTALL_FILE /tmp/nso
 
-RUN sh /tmp/nso --system-install --non-interactive --run-dir /nso/run --log-dir /log \
-  && mv /etc/ncs/ncs.conf /etc/ncs/ncs.conf.in \
+#RUN sh /tmp/nso --help  \
+  #&& /tmp/nso --system-install --non-interactive  \ 
+RUN mkdir -p /nso/run/ \
+  && mkdir /log \
+  && sh /tmp/nso --system-install --non-interactive --run-dir /nso/run/ --log-dir /log \ 
+  && mv /etc/ncs/ncs.conf /etc/ncs/ncs.conf.in \ 
   && sed -i -e 's/exec python -u/exec python3 -u/' /opt/ncs/current/bin/ncs-start-python-vm
 
 FROM nso_install AS nso_stripped
@@ -156,3 +160,4 @@ EXPOSE 22 80 443 830 4334
 HEALTHCHECK --start-period=60s --interval=5s --retries=3 --timeout=5s CMD /opt/ncs/current/bin/ncs_cmd -c get_phase
 
 CMD ["/run-nso.sh"]
+ 
